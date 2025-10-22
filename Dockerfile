@@ -1,5 +1,4 @@
-ARG BASE_IMAGE=eclipse-temurin:21-jre
-FROM ${BASE_IMAGE}
+FROM aellul27/cachyos-v4:latest
 
 # hook into docker BuildKit --platform support
 # see https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
@@ -11,6 +10,7 @@ ARG TARGETVARIANT
 ARG EXTRA_DEB_PACKAGES=""
 ARG EXTRA_DNF_PACKAGES=""
 ARG EXTRA_ALPINE_PACKAGES=""
+ARG EXTRA_ARCH_PACKAGES=""
 ARG FORCE_INSTALL_PACKAGES=1
 RUN --mount=target=/build,source=build \
     TARGET=${TARGETARCH}${TARGETVARIANT} \
