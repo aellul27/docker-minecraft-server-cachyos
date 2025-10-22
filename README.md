@@ -8,6 +8,9 @@
 
  [![Read the docs](docs/img/docs-banner.png)](https://docker-minecraft-server.readthedocs.io/)
 
+
+# This is a fork of [itzg's docker minecraft server](https://github.com/itzg/docker-minecraft-server) adding support for cachyos x86_64-v4 iamges.
+
 There you will find things like
 - [Quick start with Docker Compose](https://docker-minecraft-server.readthedocs.io/en/latest/#using-docker-compose)
 - Running [different versions of Minecraft](https://docker-minecraft-server.readthedocs.io/en/latest/versions/minecraft/) and using [various server types](https://docker-minecraft-server.readthedocs.io/en/latest/types-and-platforms/) for Java Edition
