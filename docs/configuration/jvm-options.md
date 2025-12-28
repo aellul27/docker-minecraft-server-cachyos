@@ -10,6 +10,12 @@ By default, the image declares an initial and maximum Java memory-heap limit of 
 
 The values of all three are passed directly to the JVM and support format/units as `<size>[g|G|m|M|k|K]`.
 
+To have control over heap size, without relying on absolute memory sizes percentages are also supported using `<size>%`.
+
+!!! info "RAMPercentage parameters"
+    Percentage based heap sizing is enabled using `-XX:InitialRAMPercentage` for `INIT_MEMORY` and `-XX:MaxRAMPercentage` for `MAX_MEMORY`.
+    For details on the function of these parameters look [here](https://www.baeldung.com/java-jvm-parameters-rampercentage).
+
 !!! example "Using docker run"
 
     ```
@@ -37,19 +43,7 @@ The values of all three are passed directly to the JVM and support format/units 
           MAX_MEMORY: 4G
     ```
 
-To let the JVM calculate the heap size from the container declared memory limit, unset `MEMORY` with an empty value, such as `-e MEMORY=""`. By default, the JVM will use 25% of the container memory limit as the heap limit; however, as an example the following would tell the JVM to use 75% of the container limit of 4GB of memory:
-
-!!! example "MaxRAMPercentage using compose file"
-
-    ```
-        environment:
-          MEMORY: ""
-          JVM_XX_OPTS: "-XX:MaxRAMPercentage=75"
-        deploy:
-          resources:
-            limits:
-              memory: 4G
-    ```
+To let the JVM calculate the heap size from the container declared memory limit, unset `MEMORY` with an empty value, such as `-e MEMORY=""`. By default, the JVM will use 25% of the container memory limit as the heap limit.
 
 !!! important
     The settings above only set the Java **heap** limits. Memory resource requests and limits on the overall container should also account for non-heap memory usage. An extra 25% is [a general best practice](https://dzone.com/articles/best-practices-java-memory-arguments-for-container).
@@ -57,10 +51,10 @@ To let the JVM calculate the heap size from the container declared memory limit,
 ## Extra JVM Options
 
 General JVM options can be passed to the Minecraft Server invocation by passing a `JVM_OPTS`
-environment variable. The JVM requires `-XX` options to precede `-X` options, so those can be declared in `JVM_XX_OPTS`. Both variables are space-delimited, raw JVM arguments.
+environment variable. If needing to set `-XX` options, then pass those with the `JVM_XX_OPTS` variable instead. Both variables accept space-delimited, raw JVM arguments.
 
 ```
-docker run ... -e JVM_OPTS="-someJVMOption someJVMOptionValue" ...
+docker run ... -e JVM_OPTS="-XsomeJVMOption -DpropName=value" ...
 ```
 
 **NOTE** When declaring `JVM_OPTS` in a compose file's `environment` section with list syntax, **do not** include the quotes:
@@ -68,7 +62,7 @@ docker run ... -e JVM_OPTS="-someJVMOption someJVMOptionValue" ...
 ```yaml
     environment:
       - EULA=true
-      - JVM_OPTS=-someJVMOption someJVMOptionValue
+      - JVM_OPTS=-XsomeJVMOption -DpropName=value
 ```
 
 Using object syntax is recommended and more intuitive:
@@ -76,9 +70,9 @@ Using object syntax is recommended and more intuitive:
 ```yaml
     environment:
       EULA: "true"
-      JVM_OPTS: "-someJVMOption someJVMOptionValue"
-# or
-#     JVM_OPTS: -someJVMOption someJVMOptionValue
+      JVM_OPTS: "-XsomeJVMOption -DpropName=value"
+# or without quotes
+#     JVM_OPTS: -XsomeJVMOption -DpropName=value
 ```
 
 As a shorthand for passing several system properties as `-D` arguments, you can instead pass a comma separated list of `name=value` or `name:value` pairs with `JVM_DD_OPTS`. (The colon syntax is provided for management platforms like Plesk that don't allow `=` inside a value.)
